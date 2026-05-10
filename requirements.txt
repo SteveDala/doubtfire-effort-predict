@@ -1,2 +1,5 @@
 fastapi
 uvicorn
+xgboost-cpu
+numpy
+pydantic
