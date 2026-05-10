@@ -59,3 +59,9 @@ def predict_effort(task: Task):
 
     # Return estimated_hours as of now
     return {"predicted_effort": float(task.estimated_hours)}
+
+
+@app.post("/train")
+def train(payload: dict):
+    logger.info(f"Received training payload: {payload.keys()}")
+    return {"training_results": "You have hit the endpoint"}
