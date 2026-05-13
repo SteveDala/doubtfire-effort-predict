@@ -15,21 +15,16 @@ app = FastAPI()
 model = None
 if os.path.exists("model.json"):
     model = xgb.XGBRegressor()
-    model.load_model("model.json") # load trained model file
+    model.load_model("model.json")
 else:
     print("model.json not found")
 
 # Request payload
 class Task(BaseModel):
     estimated_hours: float
-    target_grade: str
+    target_grade: int   # now passed as integer (HD=3, D=2, C=1, P=0)
     start_date: str
     due_date: str
-
-# Encode grades
-def encode_grade(grade: str):
-    mapping = {"HD": 4, "D": 3, "C": 2, "P": 1, "N": 0}
-    return mapping.get(grade.upper(), 2)
 
 # Conversion
 def days_between(start: str, end: str):
@@ -45,17 +40,22 @@ def predict_effort(task: Task):
     # Convert dates
     days_avail = days_between(task.start_date, task.due_date)
 
-    # Build feature vector
+    # Build feature vector (no encode_grade needed)
     features = np.array([
         task.estimated_hours,
-        encode_grade(task.target_grade),
+        task.target_grade,
         days_avail
     ]).reshape(1, -1)
 
-    # Predict
-    #prediction = model.predict(features)[0]
+    # If model exists, use it; otherwise return dummy
+    if model:
+        prediction = model.predict(features)[0]
+        return {"predicted_effort": float(prediction)}
 
-    #return {"predicted_effort": float(prediction)}
-
-    # Return estimated_hours as of now
     return {"predicted_effort": float(task.estimated_hours)}
+
+# Training endpoint (from Steven)
+@app.post("/train")
+def train(payload: dict):
+    logger.info(f"Received training payload: {payload.keys()}")
+    return {"training_results": "You have hit the endpoint"}
