@@ -6,8 +6,7 @@ def days_between(start, end):
 
 
 def build_features(task):
-    days_avail = days_between(task.start_date, task.due_date)
-
+    days_avail = days_between(task.start_date, task.target_date)
     return np.array([
         task.estimated_hours,
         task.target_grade,

@@ -37,9 +37,9 @@ def generate_dummy_dataset(n=500, seed=42):
         days = np.random.randint(1, 45)
 
         effort = (
-            1.5 * hours +
-            1.2 * grade +
-            0.95 * days +
+             1.3  * hours +
+            10    * (grade + 1) -
+            hours * (1 - np.exp(-days / 10)) +
             np.random.normal(0, 3)
         )
 
