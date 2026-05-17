@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 ENV MODEL_PATH=/serve/models/model.json
+ENV TZ=Australia/Melbourne
 
 EXPOSE 8080
 
